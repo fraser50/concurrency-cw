@@ -1,8 +1,12 @@
 
+
 public class Main {
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+		
+		Tests t2 = new Tests();
+		
+		t2.test_basic_1();
 
 	}
 
