@@ -22,11 +22,13 @@ not compile your submission will receive a mark of 0.
 
 ## 5.3.2 Your Remote GitLab Repository
 
-CR2.1: You must fork the coursework stub project into your own private and personal HWU GitLab 
-space. Your forked project will be your remote repository. The GitLab stub projects are 
-available at F29OC-2021-22-Students > Assignments >F29OC-2021-2022-CW. If you do 
+CR2.1: You must fork this GitLab project into your own private and personal HWU GitLab 
+space. 
+Your forked project will be your remote repository. 
+
+*If you do 
 not fork this project to your own space, then edits that you commit will be broadcast to the 
-class and you will not be allowed to use these files in your submission.
+class and you will not be allowed to use these files in your submission.*
 
 CR2.2: You must not change the name of your GitLab project or any of its files, or add any files to 
 the project that you fork from the coursework stub. (Otherwise, we will not be able to 
@@ -44,7 +46,7 @@ no-argument, constructor. You must not change this interface. You must not add e
 ‘throws’ to the public methods, otherwise, your code will not compile.
 
 CR3.2: You can include additional private classes written by yourself in TenPinManager.java but 
-must not import thread-safe libraries other than the two Intrinsic Monitor classes already 
+must not import thread-safe libraries other than the two Extrinsic Monitor classes already 
 included.
 
 ## 5.3.4 Your Test Software
@@ -59,7 +61,7 @@ of incremental development on GitLab.
 ## 5.3.5 Thread-safe Classes in TenPinManager
 
 CR5.1: To implement the required concurrent functionality, your TenPinManager must make use of 
-the following two Intrinsic Monitor classes:
+the following two Extrinsic Monitor classes:
 
 1. java.util.concurrent.locks.Condition;
 
