@@ -45,7 +45,22 @@ public class TenPinManager {
 	}; 
 
 	void playerLogin(String bookersName) {
-		//Your code here
+		// TODO: Allow login when booking doesn't already exist (at the moment bookings have to exist first)
+		lock.lock();
+		Booking b = bookings.get(bookersName);
+		b.addPlayer();
+		if (b.getCurrentPlayers() == b.getRequiredPlayers()) {
+			b.getCond().signalAll();
+			
+		} else {
+			try {
+				b.getCond().await();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
 	}; 
 	
 
@@ -62,6 +77,22 @@ public class TenPinManager {
 		public Booking(Condition cond, int requiredPlayers) {
 			this.cond = cond;
 			this.requiredPlayers = requiredPlayers;
+		}
+		
+		public int getRequiredPlayers() {
+			return requiredPlayers;
+		}
+		
+		public int getCurrentPlayers() {
+			return currentPlayers;
+		}
+		
+		public void addPlayer() {
+			currentPlayers++;
+		}
+		
+		public Condition getCond() {
+			return cond;
 		}
 	}
 
