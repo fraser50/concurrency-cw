@@ -24,14 +24,24 @@
  */
 
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
 
 public class TenPinManager {
+	ReentrantLock lock = new ReentrantLock();
+	private Map<String, Booking> bookings = new HashMap<>();
 	
 	void bookLane(String bookersName, int nPlayers) {
-		//Your code here		
+		lock.lock();
+		Condition cond = lock.newCondition();
+		
+		// TODO: Make sure booking does not already exist
+		Booking b = new Booking(cond, nPlayers);
+		bookings.put(bookersName, b);
+		lock.unlock();
 	}; 
 
 	void playerLogin(String bookersName) {
@@ -44,8 +54,15 @@ public class TenPinManager {
 	
 	// You may add private classes and methods as below:
 	
-	private class PrivateClass {
-		//Your code here
+	private class Booking {
+		private Condition cond;
+		private int requiredPlayers;
+		private int currentPlayers = 0;
+		
+		public Booking(Condition cond, int requiredPlayers) {
+			this.cond = cond;
+			this.requiredPlayers = requiredPlayers;
+		}
 	}
 
 	private void privateMethod() {
