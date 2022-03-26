@@ -61,6 +61,8 @@ public class TenPinManager {
 			}
 		}
 		
+		lock.unlock();
+		
 	}; 
 	
 
