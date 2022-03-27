@@ -44,6 +44,32 @@ public class Tests {
 		else System.out.println ("Test = FAIL: " + nThreadsReturned.get() +" returned.");
 	}
 	
+	public void test_ur2_1() {
+		System.out.println("This test books 2 lanes, the firs for 5 players, and the second for 1 player, the booking is done with the name 'Jane', 1 player thread will try to login");
+		System.out.println("Expected behaviour: 1 thread is waiting after logging in");
+		
+		TenPinManager tenPinManager = new TenPinManager();
+		tenPinManager.bookLane("Jane", 5);
+		tenPinManager.bookLane("Jane", 1);
+		
+		PlayerThread player = new PlayerThread(tenPinManager, "Jane");
+		player.start();
+		
+		try {
+			Thread.sleep(testTimeout);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		if (nThreadsReturned.get() == 0) {
+			System.out.println("Test = SUCCESS");
+			
+		} else {
+			System.out.println ("Test = FAIL: " + nThreadsReturned.get() +" returned.");
+		}
+	}
+	
 	private class PlayerThread extends Thread {
 		TenPinManager manager;
 		String bookersName;

@@ -24,7 +24,9 @@
  */
 
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
@@ -32,22 +34,28 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class TenPinManager {
 	ReentrantLock lock = new ReentrantLock();
-	private Map<String, Booking> bookings = new HashMap<>();
+	private Map<String, List<Booking>> bookings = new HashMap<>();
 	
 	void bookLane(String bookersName, int nPlayers) {
 		lock.lock();
 		Condition cond = lock.newCondition();
 		
-		// TODO: Make sure booking does not already exist
+		if (!bookings.containsKey(bookersName)) {
+			bookings.put(bookersName, new ArrayList<>());
+		}
+		
+		List<Booking> bookingList = bookings.get(bookersName);
+		
 		Booking b = new Booking(cond, nPlayers);
-		bookings.put(bookersName, b);
+		bookingList.add(b);
 		lock.unlock();
 	}; 
 
 	void playerLogin(String bookersName) {
 		// TODO: Allow login when booking doesn't already exist (at the moment bookings have to exist first)
 		lock.lock();
-		Booking b = bookings.get(bookersName);
+		List<Booking> bookingList = bookings.get(bookersName);
+		Booking b = bookingList.get(0);
 		b.addPlayer();
 		if (b.getCurrentPlayers() == b.getRequiredPlayers()) {
 			b.getCond().signalAll();
