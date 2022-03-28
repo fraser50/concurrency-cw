@@ -70,6 +70,28 @@ public class Tests {
 		}
 	}
 	
+	public void test_ur2_2() {
+		System.out.println("This test book 2 lanes just like test_ur2_1(), and creates 6 player threads, and checks that all of them finish");
+		
+		TenPinManager tenPinManager = new TenPinManager();
+		tenPinManager.bookLane("Jane", 5);
+		tenPinManager.bookLane("Jane", 1);
+		
+		for (int i=0; i<6; i++) {
+			PlayerThread player = new PlayerThread(tenPinManager, "Jane");
+			player.start();
+		}
+		
+		try {
+			Thread.sleep(testTimeout);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		System.out.println(nThreadsReturned.get());
+	}
+	
 	private class PlayerThread extends Thread {
 		TenPinManager manager;
 		String bookersName;
