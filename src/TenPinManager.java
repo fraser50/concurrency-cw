@@ -45,6 +45,10 @@ public class TenPinManager {
 			bookingConds.put(bookersName, cond);
 		}
 		
+		if (!waitingCount.containsKey(bookersName)) {
+			waitingCount.put(bookersName, 0);
+		}
+		
 		Condition cond = bookingConds.get(bookersName);
 		// TODO: Create method to check if a game can start
 		
