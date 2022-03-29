@@ -64,13 +64,19 @@ public class TenPinManager {
 		lock.lock();
 		List<Booking> bookingList = bookings.get(bookersName);
 		Booking b = bookingList.get(0);
-		b.addPlayer();
-		if (b.getCurrentPlayers() == b.getRequiredPlayers()) {
-			b.getCond().signalAll();
+		
+		Condition cond = bookingConds.get(bookersName);
+		waitingCount.put(bookersName, waitingCount.get(bookersName+1));
+		
+		// If there are enough threads waiting for this booking to start
+		if (waitingCount.get(bookersName) >= b.getRequiredPlayers()) {
+			for (int i=0; i<b.getRequiredPlayers()-1; i++) {
+				cond.signal();
+			}
 			
 		} else {
 			try {
-				b.getCond().await();
+				cond.await();
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -89,7 +95,6 @@ public class TenPinManager {
 	
 	private class Booking {
 		private int requiredPlayers;
-		private int currentPlayers = 0;
 		
 		public Booking(int requiredPlayers) {
 			this.requiredPlayers = requiredPlayers;
@@ -97,14 +102,6 @@ public class TenPinManager {
 		
 		public int getRequiredPlayers() {
 			return requiredPlayers;
-		}
-		
-		public int getCurrentPlayers() {
-			return currentPlayers;
-		}
-		
-		public void addPlayer() {
-			currentPlayers++;
 		}
 	}
 
