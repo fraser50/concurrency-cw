@@ -89,7 +89,12 @@ public class Tests {
 			e.printStackTrace();
 		}
 		
-		System.out.println(nThreadsReturned.get());
+		if (nThreadsReturned.get() == 6) {
+			System.out.println("Test = SUCCESS");
+			
+		} else {
+			System.out.println ("Test = FAIL: " + nThreadsReturned.get() +" returned.");
+		}
 	}
 	
 	private class PlayerThread extends Thread {
