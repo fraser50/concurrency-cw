@@ -81,6 +81,8 @@ public class TenPinManager {
 		
 		// If there are enough threads waiting for this booking to start
 		if (waitingCount.get(bookersName) >= b.getRequiredPlayers()) {
+			val = waitingCount.get(bookersName);
+			waitingCount.put(bookersName, val-b.getRequiredPlayers());
 			for (int i=0; i<b.getRequiredPlayers()-1; i++) {
 				cond.signal();
 			}
