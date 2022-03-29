@@ -70,7 +70,14 @@ public class TenPinManager {
 		Booking b = bookingList.get(0);
 		
 		Condition cond = bookingConds.get(bookersName);
-		waitingCount.put(bookersName, waitingCount.get(bookersName+1));
+		
+		// This line was previously: waitingCount.put(waitingCount.get(bookersName)+1);
+		// The previous version above caused a weird issue where instead of n+1 being put there, null was put there.
+		// Getting the value first, then incrementing and putting it fixes the issue
+		// Not 100% sure what is going on...
+		
+		int val = waitingCount.get(bookersName);
+		waitingCount.put(bookersName, val+1);
 		
 		// If there are enough threads waiting for this booking to start
 		if (waitingCount.get(bookersName) >= b.getRequiredPlayers()) {
