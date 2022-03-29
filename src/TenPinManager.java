@@ -35,10 +35,18 @@ import java.util.concurrent.locks.ReentrantLock;
 public class TenPinManager {
 	ReentrantLock lock = new ReentrantLock();
 	private Map<String, List<Booking>> bookings = new HashMap<>();
+	private Map<String, Condition> bookingConds = new HashMap<>();
+	private Map<String, Integer> waitingCount = new HashMap<>();
 	
 	void bookLane(String bookersName, int nPlayers) {
 		lock.lock();
-		Condition cond = lock.newCondition();
+		if (!bookingConds.containsKey(bookersName)) {
+			Condition cond = lock.newCondition();
+			bookingConds.put(bookersName, cond);
+		}
+		
+		Condition cond = bookingConds.get(bookersName);
+		// TODO: Create method to check if a game can start
 		
 		if (!bookings.containsKey(bookersName)) {
 			bookings.put(bookersName, new ArrayList<>());
@@ -46,7 +54,7 @@ public class TenPinManager {
 		
 		List<Booking> bookingList = bookings.get(bookersName);
 		
-		Booking b = new Booking(cond, nPlayers);
+		Booking b = new Booking(nPlayers);
 		bookingList.add(b);
 		lock.unlock();
 	}; 
@@ -80,12 +88,10 @@ public class TenPinManager {
 	// You may add private classes and methods as below:
 	
 	private class Booking {
-		private Condition cond;
 		private int requiredPlayers;
 		private int currentPlayers = 0;
 		
-		public Booking(Condition cond, int requiredPlayers) {
-			this.cond = cond;
+		public Booking(int requiredPlayers) {
 			this.requiredPlayers = requiredPlayers;
 		}
 		
@@ -99,10 +105,6 @@ public class TenPinManager {
 		
 		public void addPlayer() {
 			currentPlayers++;
-		}
-		
-		public Condition getCond() {
-			return cond;
 		}
 	}
 
