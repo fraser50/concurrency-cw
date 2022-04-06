@@ -32,13 +32,13 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
 
-public class TenPinManager {
+public class TenPinManager implements Manager {
 	ReentrantLock lock = new ReentrantLock();
 	private Map<String, List<Booking>> bookings = new HashMap<>();
 	private Map<String, Condition> bookingConds = new HashMap<>();
 	private Map<String, Integer> waitingCount = new HashMap<>();
 	
-	void bookLane(String bookersName, int nPlayers) {
+	public void bookLane(String bookersName, int nPlayers) {
 		lock.lock();
 		if (!bookingConds.containsKey(bookersName)) {
 			Condition cond = lock.newCondition();
@@ -63,7 +63,7 @@ public class TenPinManager {
 		lock.unlock();
 	}; 
 
-	void playerLogin(String bookersName) {
+	public void playerLogin(String bookersName) {
 		// TODO: Allow login when booking doesn't already exist (at the moment bookings have to exist first)
 		lock.lock();
 		List<Booking> bookingList = bookings.get(bookersName);
