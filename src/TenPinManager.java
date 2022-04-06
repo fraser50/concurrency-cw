@@ -87,6 +87,9 @@ public class TenPinManager implements Manager {
 				cond.signal();
 			}
 			
+			// Remove the booking after player requirement is met
+			bookings.get(bookersName).remove(b);
+			
 		} else {
 			try {
 				cond.await();
