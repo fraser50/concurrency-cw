@@ -67,17 +67,36 @@ public class TenPinManager implements Manager {
 		// TODO: Allow login when booking doesn't already exist (at the moment bookings have to exist first)
 		lock.lock();
 		List<Booking> bookingList = bookings.get(bookersName);
-		Booking b = bookingList.get(0);
 		
 		Condition cond = bookingConds.get(bookersName);
+		if (cond == null) {
+			cond = lock.newCondition();
+			bookingConds.put(bookersName, cond);
+		}
 		
 		// This line was previously: waitingCount.put(waitingCount.get(bookersName)+1);
 		// The previous version above caused a weird issue where instead of n+1 being put there, null was put there.
 		// Getting the value first, then incrementing and putting it fixes the issue
 		// Not 100% sure what is going on...
 		
-		int val = waitingCount.get(bookersName);
+		int val = 0;
+		if (waitingCount.containsKey(bookersName)) {
+			val = waitingCount.get(bookersName);
+		}
+		
 		waitingCount.put(bookersName, val+1);
+		
+		if (bookingList == null || bookingList.size() == 0) {
+			try {
+				cond.await();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return;
+		}
+		
+		Booking b = bookingList.get(0);
 		
 		// If there are enough threads waiting for this booking to start
 		if (waitingCount.get(bookersName) >= b.getRequiredPlayers()) {
