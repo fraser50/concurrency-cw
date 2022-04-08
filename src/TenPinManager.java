@@ -156,8 +156,4 @@ public class TenPinManager implements Manager {
 			return requiredPlayers;
 		}
 	}
-
-	private void privateMethod() {
-		//Your code here
-	}
 }
