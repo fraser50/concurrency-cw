@@ -50,7 +50,6 @@ public class TenPinManager implements Manager {
 		}
 		
 		Condition cond = bookingConds.get(bookersName);
-		// TODO: Create method to check if a game can start
 		
 		if (!bookings.containsKey(bookersName)) {
 			bookings.put(bookersName, new ArrayList<>());
@@ -60,6 +59,22 @@ public class TenPinManager implements Manager {
 		
 		Booking b = new Booking(nPlayers);
 		bookingList.add(b);
+		
+		// Now check to see if the first booking can take place
+		
+		int wc = waitingCount.get(bookersName);
+		if (wc >= b.getRequiredPlayers()) {
+			System.out.println("YAY (" + bookersName + ")");
+			for (int i=0; i<b.getRequiredPlayers(); i++) {
+				cond.signal();
+				System.out.println("signal");
+			}
+			
+			waitingCount.put(bookersName, wc-b.getRequiredPlayers());
+			
+			bookingList.remove(b);
+		}
+		
 		lock.unlock();
 	}; 
 
@@ -93,6 +108,8 @@ public class TenPinManager implements Manager {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			
+			lock.unlock();
 			return;
 		}
 		
