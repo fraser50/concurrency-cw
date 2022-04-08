@@ -97,6 +97,38 @@ public class Tests {
 		}
 	}
 	
+	public void test_ur3_1() {
+		System.out.println("This test creates 2 booking: Jane and Bob, the 2 bookings have 3 and 5 players required respectively.");
+		TenPinManager tenPinManager = new TenPinManager();
+		
+		tenPinManager.bookLane("Jane", 3);
+		tenPinManager.bookLane("Bob", 5);
+		
+		for (int i=0; i<3; i++) {
+			PlayerThread player = new PlayerThread(tenPinManager, "Jane");
+			player.start();
+		}
+		
+		for (int i=0; i<5; i++) {
+			PlayerThread player = new PlayerThread(tenPinManager, "Bob");
+			player.start();
+		}
+		
+		try {
+			Thread.sleep(testTimeout);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		if (nThreadsReturned.get() == 8) {
+			System.out.println("Test = SUCCESS");
+			
+		} else {
+			System.out.println("Test = FAIL: " + nThreadsReturned.get() + " returned.");
+		}
+	}
+	
 	private class PlayerThread extends Thread {
 		TenPinManager manager;
 		String bookersName;
