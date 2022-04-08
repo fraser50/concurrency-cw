@@ -64,10 +64,8 @@ public class TenPinManager implements Manager {
 		
 		int wc = waitingCount.get(bookersName);
 		if (wc >= b.getRequiredPlayers()) {
-			System.out.println("YAY (" + bookersName + ")");
 			for (int i=0; i<b.getRequiredPlayers(); i++) {
 				cond.signal();
-				System.out.println("signal");
 			}
 			
 			waitingCount.put(bookersName, wc-b.getRequiredPlayers());
