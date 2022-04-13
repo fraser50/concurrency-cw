@@ -12,6 +12,8 @@ public class Main {
 		tests.test_ur3_1();
 		tests.test_ur4_1();
 		tests.test_ur4_2();
+		
+		System.exit(0);
 
 	}
 
