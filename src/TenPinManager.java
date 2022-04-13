@@ -40,40 +40,42 @@ public class TenPinManager implements Manager {
 	
 	public void bookLane(String bookersName, int nPlayers) {
 		lock.lock();
-		if (!bookingConds.containsKey(bookersName)) {
-			Condition cond = lock.newCondition();
-			bookingConds.put(bookersName, cond);
-		}
 		
-		if (!waitingCount.containsKey(bookersName)) {
-			waitingCount.put(bookersName, 0);
-		}
 		
-		Condition cond = bookingConds.get(bookersName);
-		
-		if (!bookings.containsKey(bookersName)) {
-			bookings.put(bookersName, new ArrayList<>());
-		}
-		
-		List<Booking> bookingList = bookings.get(bookersName);
-		
-		Booking b = new Booking(nPlayers);
-		bookingList.add(b);
 		
 		// Now check to see if the first booking can take place
 		
-		int wc = waitingCount.get(bookersName);
-		if (wc >= b.getRequiredPlayers()) {
-			for (int i=0; i<b.getRequiredPlayers(); i++) {
-				cond.signal();
+		try {
+			// Create a new condition variable if one does not already exist
+			if (!bookingConds.containsKey(bookersName)) {
+				Condition cond = lock.newCondition();
+				bookingConds.put(bookersName, cond);
 			}
-			
-			waitingCount.put(bookersName, wc-b.getRequiredPlayers());
-			
-			bookingList.remove(b);
+			// If there is no waiting count for this booking name, initialise to zero
+			if (!waitingCount.containsKey(bookersName)) {
+				waitingCount.put(bookersName, 0);
+			}
+			Condition cond = bookingConds.get(bookersName);
+			if (!bookings.containsKey(bookersName)) {
+				bookings.put(bookersName, new ArrayList<>());
+			}
+			List<Booking> bookingList = bookings.get(bookersName);
+			Booking b = new Booking(nPlayers);
+			bookingList.add(b);
+			int wc = waitingCount.get(bookersName);
+			if (wc >= b.getRequiredPlayers()) {
+				for (int i = 0; i < b.getRequiredPlayers(); i++) {
+					cond.signal();
+				}
+
+				waitingCount.put(bookersName, wc - b.getRequiredPlayers());
+
+				bookingList.remove(b);
+			} 
+		} finally {
+			lock.unlock();
 		}
 		
-		lock.unlock();
 	}; 
 
 	public void playerLogin(String bookersName) {
