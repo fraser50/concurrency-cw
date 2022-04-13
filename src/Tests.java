@@ -160,6 +160,41 @@ public class Tests {
 		} else {
 			System.out.println("Test = FAIL: " + nThreadsReturned.get() + " returned.");
 		}
+		
+	}
+	
+	public void test_ur4_2() {
+		System.out.println("This test logs 5 threads into Jane, and creates 2 bookings for Jane, 3 and 2 players each");
+		TenPinManager tenPinManager = new TenPinManager();
+		
+		for (int i=0; i<5; i++) {
+			PlayerThread p = new PlayerThread(tenPinManager, "Jane");
+			p.start();
+		}
+		
+		try {
+			Thread.sleep(testTimeout);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		tenPinManager.bookLane("Jane", 3);
+		tenPinManager.bookLane("Jane", 2);
+		
+		try {
+			Thread.sleep(testTimeout);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		if (nThreadsReturned.get() == 5) {
+			System.out.println("Test = SUCCESS");
+			
+		} else {
+			System.out.println("Test = FAIL: " + nThreadsReturned.get() + " returned.");
+		}
 	}
 	
 	private class PlayerThread extends Thread {
