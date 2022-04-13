@@ -41,20 +41,18 @@ public class TenPinManager implements Manager {
 	public void bookLane(String bookersName, int nPlayers) {
 		lock.lock();
 		
-		
-		
-		// Now check to see if the first booking can take place
-		
 		try {
 			// Create a new condition variable if one does not already exist
 			if (!bookingConds.containsKey(bookersName)) {
 				Condition cond = lock.newCondition();
 				bookingConds.put(bookersName, cond);
 			}
+			
 			// If there is no waiting count for this booking name, initialise to zero
 			if (!waitingCount.containsKey(bookersName)) {
 				waitingCount.put(bookersName, 0);
 			}
+			
 			Condition cond = bookingConds.get(bookersName);
 			if (!bookings.containsKey(bookersName)) {
 				bookings.put(bookersName, new ArrayList<>());
@@ -62,6 +60,8 @@ public class TenPinManager implements Manager {
 			List<Booking> bookingList = bookings.get(bookersName);
 			Booking b = new Booking(nPlayers);
 			bookingList.add(b);
+			
+			// Now check to see if the first booking can take place
 			int wc = waitingCount.get(bookersName);
 			if (wc >= b.getRequiredPlayers()) {
 				for (int i = 0; i < b.getRequiredPlayers(); i++) {
@@ -81,61 +81,61 @@ public class TenPinManager implements Manager {
 	public void playerLogin(String bookersName) {
 		// TODO: Allow login when booking doesn't already exist (at the moment bookings have to exist first)
 		lock.lock();
-		List<Booking> bookingList = bookings.get(bookersName);
 		
-		Condition cond = bookingConds.get(bookersName);
-		if (cond == null) {
-			cond = lock.newCondition();
-			bookingConds.put(bookersName, cond);
-		}
 		
 		// This line was previously: waitingCount.put(waitingCount.get(bookersName)+1);
 		// The previous version above caused a weird issue where instead of n+1 being put there, null was put there.
 		// Getting the value first, then incrementing and putting it fixes the issue
 		// Not 100% sure what is going on...
 		
-		int val = 0;
-		if (waitingCount.containsKey(bookersName)) {
-			val = waitingCount.get(bookersName);
-		}
-		
-		waitingCount.put(bookersName, val+1);
-		
-		if (bookingList == null || bookingList.size() == 0) {
-			try {
-				cond.await();
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+		try {
+			List<Booking> bookingList = bookings.get(bookersName);
+			Condition cond = bookingConds.get(bookersName);
+			if (cond == null) {
+				cond = lock.newCondition();
+				bookingConds.put(bookersName, cond);
+			}
+			int val = 0;
+			if (waitingCount.containsKey(bookersName)) {
+				val = waitingCount.get(bookersName);
+			}
+			waitingCount.put(bookersName, val + 1);
+			if (bookingList == null || bookingList.size() == 0) {
+				try {
+					cond.await();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+				// No need to unlock here, finally will do that when returning
+				return;
+			}
+			Booking b = bookingList.get(0);
+			// If there are enough threads waiting for this booking to start
+			if (waitingCount.get(bookersName) >= b.getRequiredPlayers()) {
+				val = waitingCount.get(bookersName);
+				waitingCount.put(bookersName, val - b.getRequiredPlayers());
+				for (int i = 0; i < b.getRequiredPlayers() - 1; i++) {
+					cond.signal();
+				}
+
+				// Remove the booking after player requirement is met
+				bookings.get(bookersName).remove(b);
+
+			} else {
+				try {
+					cond.await();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 			
+		} finally {
 			lock.unlock();
-			return;
 		}
 		
-		Booking b = bookingList.get(0);
-		
-		// If there are enough threads waiting for this booking to start
-		if (waitingCount.get(bookersName) >= b.getRequiredPlayers()) {
-			val = waitingCount.get(bookersName);
-			waitingCount.put(bookersName, val-b.getRequiredPlayers());
-			for (int i=0; i<b.getRequiredPlayers()-1; i++) {
-				cond.signal();
-			}
-			
-			// Remove the booking after player requirement is met
-			bookings.get(bookersName).remove(b);
-			
-		} else {
-			try {
-				cond.await();
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		
-		lock.unlock();
 		
 	}; 
 	
