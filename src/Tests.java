@@ -25,7 +25,9 @@ public class Tests {
 	AtomicInteger nThreadsReturned = new AtomicInteger(0);
 
 
-	public void test_basic_1 (){	
+	public void test_basic_1 (){
+		nThreadsReturned.set(0);
+		
 		System.out.println("This test books 1 lane for 6 players in the name of 'Jane' and then creates 7 player threads that try to login.");
 		System.out.println("Expected behaviour: 6 players return from tenPinManager.playerLogin, 1 player indefinitely waits");
 
@@ -45,6 +47,8 @@ public class Tests {
 	}
 	
 	public void test_ur2_1() {
+		nThreadsReturned.set(0);
+		
 		System.out.println("This test books 2 lanes, the firs for 5 players, and the second for 1 player, the booking is done with the name 'Jane', 1 player thread will try to login");
 		System.out.println("Expected behaviour: 1 thread is waiting after logging in");
 		
@@ -71,6 +75,8 @@ public class Tests {
 	}
 	
 	public void test_ur2_2() {
+		nThreadsReturned.set(0);
+		
 		System.out.println("This test book 2 lanes just like test_ur2_1(), and creates 6 player threads, and checks that all of them finish");
 		
 		TenPinManager tenPinManager = new TenPinManager();
@@ -98,6 +104,8 @@ public class Tests {
 	}
 	
 	public void test_ur3_1() {
+		nThreadsReturned.set(0);
+		
 		System.out.println("This test creates 2 booking: Jane and Bob, the 2 bookings have 3 and 5 players required respectively.");
 		TenPinManager tenPinManager = new TenPinManager();
 		
@@ -130,6 +138,8 @@ public class Tests {
 	}
 	
 	public void test_ur4_1() {
+		nThreadsReturned.set(0);
+		
 		System.out.println("This test books 3 threads in for Jane, and 2 for Bob, then waites, and then creates the necessary bookings.");
 		
 		TenPinManager tenPinManager = new TenPinManager();
@@ -164,6 +174,8 @@ public class Tests {
 	}
 	
 	public void test_ur4_2() {
+		nThreadsReturned.set(0);
+		
 		System.out.println("This test logs 5 threads into Jane, and creates 2 bookings for Jane, 3 and 2 players each");
 		TenPinManager tenPinManager = new TenPinManager();
 		
