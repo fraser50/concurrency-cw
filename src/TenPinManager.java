@@ -139,10 +139,6 @@ public class TenPinManager implements Manager {
 		
 	}; 
 	
-
-	
-	
-	
 	// You may add private classes and methods as below:
 	
 	private class Booking {
