@@ -43,7 +43,10 @@ public class Tests {
 		
 		//Test result
 		if(nThreadsReturned.get() == 6) System.out.println ("Test = SUCCESS");
-		else System.out.println ("Test = FAIL: " + nThreadsReturned.get() +" returned.");
+		else {
+			System.out.println ("Test = FAIL: " + nThreadsReturned.get() +" returned.");
+			System.exit(-1);
+		}
 	}
 	
 	public void test_ur2_1() {
@@ -71,6 +74,7 @@ public class Tests {
 			
 		} else {
 			System.out.println ("Test = FAIL: " + nThreadsReturned.get() +" returned.");
+			System.exit(-1);
 		}
 	}
 	
@@ -100,6 +104,7 @@ public class Tests {
 			
 		} else {
 			System.out.println ("Test = FAIL: " + nThreadsReturned.get() +" returned.");
+			System.exit(-1);
 		}
 	}
 	
@@ -134,6 +139,7 @@ public class Tests {
 			
 		} else {
 			System.out.println("Test = FAIL: " + nThreadsReturned.get() + " returned.");
+			System.exit(-1);
 		}
 	}
 	
@@ -169,6 +175,7 @@ public class Tests {
 			
 		} else {
 			System.out.println("Test = FAIL: " + nThreadsReturned.get() + " returned.");
+			System.exit(-1);
 		}
 		
 	}
@@ -206,6 +213,7 @@ public class Tests {
 			
 		} else {
 			System.out.println("Test = FAIL: " + nThreadsReturned.get() + " returned.");
+			System.exit(-1);
 		}
 	}
 	
