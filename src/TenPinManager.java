@@ -79,7 +79,6 @@ public class TenPinManager implements Manager {
 	}; 
 
 	public void playerLogin(String bookersName) {
-		// TODO: Allow login when booking doesn't already exist (at the moment bookings have to exist first)
 		lock.lock();
 		
 		try {
@@ -99,7 +98,6 @@ public class TenPinManager implements Manager {
 				try {
 					cond.await();
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 
@@ -122,7 +120,6 @@ public class TenPinManager implements Manager {
 				try {
 					cond.await();
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
